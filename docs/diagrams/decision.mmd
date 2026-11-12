@@ -1,0 +1,13 @@
+flowchart TD
+    Start(["Discovered Support != True Physics Support"]) --> CheckRank{"Is Theta(X) ill-conditioned?<br/>cond(Theta) >> 1e12"}
+    CheckRank -- Yes --> FixNorm["Normalize library columns<br/>Reduce maximum polynomial degree d"]
+    CheckRank -- No --> CheckNoise{"Is noise level sigma excessive?<br/>Relative noise > 5%"}
+    CheckNoise -- Yes --> FixDiff["Switch numerical differentiation:<br/>Use TVReg or smoothing splines"]
+    CheckNoise -- No --> CheckSparsity{"Are coefficients over-pruned<br/>or overly dense?"}
+    CheckSparsity -- Over-pruned --> LowerLambda["Decrease threshold lambda<br/>Tune lambda via Pareto frontier / AIC"]
+    CheckSparsity -- Too Dense --> RaiseLambda["Increase threshold lambda<br/>Incorporate L2 ridge regularizer"]
+    FixNorm --> Retest(["Re-evaluate Model Fit"])
+    FixDiff --> Retest
+    LowerLambda --> Retest
+    RaiseLambda --> Retest
+

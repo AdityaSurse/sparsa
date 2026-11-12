@@ -1,0 +1,15 @@
+flowchart LR
+    ODE["True Dynamical System<br/>dx/dt = f(x)"] --> RK4["RK4 Forward Integrator<br/>Step size dt, steps m"]
+    RK4 --> Clean["Clean Trajectory Matrix<br/>X_clean in R^(m x n)"]
+    Clean --> Noise["Additive Gaussian Noise<br/>eta ~ N(0, sigma^2 I)"]
+    Noise --> Noisy["Observed Trajectory<br/>X in R^(m x n)"]
+    Noisy --> Diff["Numerical Differentiation<br/>Finite Diff / TVRegSpline"]
+    Diff --> Deriv["Estimated Derivative Matrix<br/>dXdt in R^(m x n)"]
+    Noisy --> Lib["Polynomial Library Theta(X)<br/>Degree d <= p"]
+    Lib --> Theta["Candidate Feature Matrix<br/>Theta(X) in R^(m x p)"]
+    Theta --> STLSQ["STLSQ Sparse Regression<br/>Threshold lambda"]
+    Deriv --> STLSQ
+    STLSQ --> Xi["Sparse Coefficient Matrix<br/>Xi in R^(p x n)"]
+    Xi --> Model["Discovered Governing ODE<br/>dx/dt = Theta(x) * Xi"]
+    Model --> Val["Validation & Attractor Reconstruction<br/>Lyapunov exponents, forecast MSE"]
+

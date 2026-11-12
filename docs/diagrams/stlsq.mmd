@@ -1,0 +1,12 @@
+flowchart TD
+    Start(["Input: Theta in R^(m x p), dXdt in R^(m x n), threshold lambda, max_iter"]) --> Init["Initialize active mask: S = True in R^(p x n)<br/>Iteration counter: k = 0"]
+    Init --> SolveLS["Solve unconstrained least-squares on active indices S:<br/>Xi_S = (Theta_S^T Theta_S)^(-1) Theta_S^T dXdt"]
+    SolveLS --> CheckSmall{"Evaluate coefficients:<br/>Any |Xi(i, j)| < lambda for active S?"}
+    CheckSmall -- Yes --> UpdateMask["Update support mask:<br/>S(i, j) = False where |Xi(i, j)| < lambda<br/>Set Xi(i, j) = 0"]
+    UpdateMask --> IncIter["Increment iteration: k = k + 1"]
+    IncIter --> CheckConverge{"Has support converged?<br/>S_k == S_(k-1) or k >= max_iter"}
+    CheckConverge -- No --> SolveLS
+    CheckConverge -- Yes --> Return(["Output: Final sparse coefficient matrix Xi"])
+    CheckSmall -- No --> ConvergedEarly["Support set unchanged"]
+    ConvergedEarly --> Return
+

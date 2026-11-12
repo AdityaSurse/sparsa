@@ -1,0 +1,17 @@
+flowchart TD
+    subgraph Core["src/sparsa"]
+        InitMod["__init__.py<br/>Public API exports"]
+        BaseMod["base.py<br/>SINDy Estimator API"]
+        LibMod["library.py<br/>Polynomial & Trig Features"]
+        OptMod["optimizers.py<br/>STLSQ & Sparsity Solvers"]
+        DiffMod["differentiation.py<br/>Finite Diff & TVReg"]
+        SimMod["simulation.py<br/>RK4 & Dynamical Systems"]
+        ValMod["validation.py<br/>Attractor & Trajectory Metrics"]
+    end
+    InitMod --> BaseMod
+    BaseMod --> LibMod
+    BaseMod --> OptMod
+    BaseMod --> DiffMod
+    SimMod --> BaseMod
+    ValMod --> BaseMod
+

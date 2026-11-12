@@ -1,0 +1,11 @@
+flowchart LR
+    subgraph SINDySystem["Matrix Formulation: dXdt = Theta(X) * Xi"]
+        direction LR
+        dXdt["dXdt<br/>Shape: (m x n)<br/>m: Time points<br/>n: State variables"]
+        Eq["="]
+        Theta["Theta(X)<br/>Shape: (m x p)<br/>m: Time points<br/>p: Candidate basis terms"]
+        Mul["*"]
+        Xi["Xi<br/>Shape: (p x n)<br/>p: Candidate basis terms<br/>n: State variables (sparse)"]
+        dXdt --- Eq --- Theta --- Mul --- Xi
+    end
+
