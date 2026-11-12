@@ -23,6 +23,10 @@ from sindy.derivatives import (
     savgol_diff,
     tv_diff,
 )
+from sindy.library import (
+    FeatureLibrary,
+    print_library,
+)
 
 __all__ = [
     "DynamicalSystem",
@@ -42,5 +46,7 @@ __all__ = [
     "central_diff",
     "savgol_diff",
     "tv_diff",
+    "FeatureLibrary",
+    "print_library",
 ]
 
