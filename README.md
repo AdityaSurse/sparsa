@@ -263,7 +263,7 @@ sparsa/
 
 - [ ] **Phase 1**: Mathematical formulation, library design, and architectural specification.
 - [x] **Phase 2**: High-order forward numerical integrator (vectorized RK4) in pure NumPy.
-- [ ] **Phase 3**: Numerical differentiation suite (finite difference, central difference, TVReg).
+- [x] **Phase 3**: Numerical differentiation suite (finite difference, central difference, TVReg).
 - [ ] **Phase 4**: Polynomial and candidate feature matrix builder with combinatorial cross-terms.
 - [ ] **Phase 5**: Sequentially Thresholded Least Squares (STLSQ) optimizer with convergence criteria.
 - [ ] **Phase 6**: Core `SINDy` estimator implementing standard `.fit()`, `.predict()`, and `.score()`.

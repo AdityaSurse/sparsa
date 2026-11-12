@@ -18,6 +18,11 @@ from sindy.simulate import (
     generate_dataset,
     add_noise,
 )
+from sindy.derivatives import (
+    central_diff,
+    savgol_diff,
+    tv_diff,
+)
 
 __all__ = [
     "DynamicalSystem",
@@ -34,5 +39,8 @@ __all__ = [
     "simulate",
     "generate_dataset",
     "add_noise",
+    "central_diff",
+    "savgol_diff",
+    "tv_diff",
 ]
 
