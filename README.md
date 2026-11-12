@@ -204,6 +204,8 @@ $$
 \end{aligned}
 $$
 
+![Lorenz-63 Attractor](docs/figures/lorenz_attractor.png)
+
 ### Parameter Recovery Verification
 
 | Term | True $\dot{x}$ | Discovered $\dot{x}$ | True $\dot{y}$ | Discovered $\dot{y}$ | True $\dot{z}$ | Discovered $\dot{z}$ | Abs Error (Max) | Status |
@@ -260,7 +262,7 @@ sparsa/
 ## 6. Implementation Roadmap
 
 - [ ] **Phase 1**: Mathematical formulation, library design, and architectural specification.
-- [ ] **Phase 2**: High-order forward numerical integrator (vectorized RK4) in pure NumPy.
+- [x] **Phase 2**: High-order forward numerical integrator (vectorized RK4) in pure NumPy.
 - [ ] **Phase 3**: Numerical differentiation suite (finite difference, central difference, TVReg).
 - [ ] **Phase 4**: Polynomial and candidate feature matrix builder with combinatorial cross-terms.
 - [ ] **Phase 5**: Sequentially Thresholded Least Squares (STLSQ) optimizer with convergence criteria.
