@@ -228,8 +228,17 @@ $$
 ```
 sparsa/
 ├── README.md
+├── LICENSE
+├── Makefile
+├── requirements.txt
 ├── metrics.json
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── app/
+│   └── dashboard.py
 ├── docs/
+│   ├── demo_instructions.md
 │   ├── diagrams/
 │   │   ├── pipeline.mmd
 │   │   ├── stlsq.mmd
@@ -301,32 +310,45 @@ sparsa/
 
 ### Installation
 
-Clone the repository and install required runtime dependencies:
+Clone the repository and install dependencies:
 
 ```bash
 git clone https://github.com/your-username/sparsa.git
 cd sparsa
-pip install numpy matplotlib
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
-### Quickstart Execution
+### Interactive Streamlit Dashboard
+
+Launch the live interactive exploration dashboard:
 
 ```bash
-# Run unit test suite
-python3 tests/test_simulation.py
-python3 tests/test_differentiation.py
-python3 tests/test_library.py
-python3 tests/test_stlsq.py
-python3 tests/test_metrics.py
+make run
+# or directly:
+streamlit run app/dashboard.py
+```
 
-# Run derivative benchmark across noise levels
-python3 experiments/exp_derivatives.py
+See [docs/demo_instructions.md](docs/demo_instructions.md) for step-by-step instructions on recording a 30-second demonstration GIF of the dashboard.
+
+### Command-Line Execution & Tests
+
+```bash
+# Run all unit test suites
+make test
 
 # Run end-to-end Lorenz equation discovery and Pareto threshold sweep
-python3 experiments/exp_lorenz_discovery.py
+make lorenz
 
-# Run out-of-sample dynamical validation on 20 unseen initial conditions
-python3 experiments/exp_validation.py
+# Run out-of-sample dynamical validation benchmark (20 unseen conditions)
+make validation
+
+# Run systematic noise and numerical differentiation ablation study (1,800 runs)
+make noise
+
+# Run multi-system benchmark (Lotka-V., Van der Pol, Pendulum, Rössler)
+make systems
 ```
 
 ---
@@ -417,8 +439,30 @@ Evaluated across continuous nonlinear dynamical architectures, ranging from ecol
 
 ---
 
-## 9. References
+## 9. What I Learned
+
+1. **Numerical Differentiation Is the Fundamental Inverse Bottleneck**: Approximating time derivatives via finite differences amplifies high-frequency measurement noise by $O(1/\Delta t)$. Counter-intuitively, sampling faster ($\Delta t \to 0$) without low-pass filtering or regularization dramatically degrades the derivative signal-to-noise ratio, completely swamping true physics in derivative noise.
+2. **Hard Thresholding (STLSQ) Eliminates LASSO Shrinkage Bias**: While $L_1$ soft-thresholding (LASSO) penalizes coefficient magnitude and systematically underestimates physical rate constants, STLSQ alternates unconstrained least-squares refits on the active support with hard thresholding. This completely strips away shrinkage bias and recovers physical parameters to machine precision ($10^{-16}$).
+3. **The Chaos Prediction Horizon Sets an Absolute Bound**: For chaotic dynamical systems (Lorenz-63 $\lambda_{\max} \approx 0.906$, $\tau_L \approx 1.104$ s), infinitesimal numerical perturbations ($10^{-16}$) double every Lyapunov time $\tau_L$. Forward forecasting error curves inevitably diverge after $\approx 5-6\,\tau_L$, requiring dynamical system validation to rely on invariant statistical ergodic measures (Wasserstein distance, invariant density Total Variation) rather than infinite-time point matching.
+4. **Weak-Form Variational Integration Completely Bypasses Derivatives**: Projecting the ODE onto compactly supported test functions and integrating by parts transfers differentiation onto the analytical test function. This converts differentiation into temporal integration, transforming noise amplification into noise attenuation and enabling exact topological recovery at noise levels ($\ge 5\%$) where classical differentiators collapse.
+5. **The Taylor Series Truncation Trap**: When a candidate library lacks the true functional form (e.g. attempting to discover a pendulum $-5\sin(\theta)$ with polynomials only, or rational kinetics $2x/(1+x^2)$), SINDy fits the truncated Taylor series over the training attractor. Because polynomial truncations diverge outside their convergence radius, the resulting surrogate produces catastrophic out-of-distribution flow reversals and numerical explosion.
+
+---
+
+## 10. Limitations and Future Work
+
+- **Adaptive Weak-Form SINDy (WSINDy)**: While our fixed polynomial bump kernels achieve high robustness at $5\%$ noise, automated selection of test function support duration $T_w$ tuned to local Lyapunov timescales will enable parameter-free discovery on stiff, multi-scale systems.
+- **SINDy with Control (SINDYc)**: Extending the candidate library $\mathbf{\Theta}(\mathbf{X}, \mathbf{U})$ to include external actuation inputs $\mathbf{u}(t)$ enables discovery of forced nonlinear systems, aerospace vehicles, and robotic manipulators directly for Model Predictive Control (MPC).
+- **Spatio-Temporal Systems (PDE-FIND)**: Physical continuum mechanics (fluid flow, reaction-diffusion, wave propagation) require discovering partial differential equations $\mathbf{u}_t = \mathbf{N}(\mathbf{u}, \mathbf{u}_x, \mathbf{u}_{xx}, \dots)$. Expanding the library generator to spatial derivative operators evaluated over spatial grids will allow discovery of Navier-Stokes and Kuramoto-Sivashinsky equations.
+- **Ensemble & Bayesian SINDy (E-SINDy)**: Bootstrapping and trajectory sub-sampling yield posterior term inclusion probabilities. This converts SINDy into an uncertainty-aware estimator that filters out spurious terms via consensus voting and cross-validation across independent realizations.
+- **Comparison with Neural ODEs and PINNs**: Neural ODEs parameterize continuous vector fields as deep neural networks ($\dot{\mathbf{x}} = \text{NN}(\mathbf{x})$). While Neural ODEs can fit arbitrary complex manifolds, they act as uninterpretable black boxes requiring thousands of parameters and GPU training. In contrast, SINDy discovers parsimonious symbolic ODEs that strictly conserve physical symmetries and compute forward integrations $10^4 \times$ faster without specialized hardware. Hybrid architectures combining neural autoencoders for coordinate discovery with SINDy regression in the latent space represent the natural frontier.
+
+---
+
+## 11. References
 
 1. Brunton, S. L., Proctor, J. L., & Kutz, J. N. (2016). *Discovering governing equations from data by sparse identification of nonlinear dynamical systems*. **Proceedings of the National Academy of Sciences (PNAS)**, 113(15), 3932-3937. [doi:10.1073/pnas.1517384113](https://doi.org/10.1073/pnas.1517384113)
-2. Lorenz, E. N. (1963). *Deterministic nonperiodic flow*. **Journal of the Atmospheric Sciences**, 20(2), 130-141.
+2. Schaeffer, H., & McCalla, S. G. (2020). *Sparse model selection via integral terms*. **Physical Review E**, 102(4), 043304.
+3. Messenger, D. A., & Bortz, D. M. (2021). *Weak SINDy for partial differential equations*. **Journal of Computational Physics**, 443, 110525.
+4. Lorenz, E. N. (1963). *Deterministic nonperiodic flow*. **Journal of the Atmospheric Sciences**, 20(2), 130-141.
 
