@@ -27,6 +27,10 @@ from sindy.library import (
     FeatureLibrary,
     print_library,
 )
+from sindy.stlsq import (
+    STLSQ,
+    pretty_print_equations,
+)
 
 __all__ = [
     "DynamicalSystem",
@@ -48,5 +52,7 @@ __all__ = [
     "tv_diff",
     "FeatureLibrary",
     "print_library",
+    "STLSQ",
+    "pretty_print_equations",
 ]
 

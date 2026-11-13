@@ -265,7 +265,7 @@ sparsa/
 - [x] **Phase 2**: High-order forward numerical integrator (vectorized RK4) in pure NumPy.
 - [x] **Phase 3**: Numerical differentiation suite (finite difference, central difference, TVReg).
 - [ ] **Phase 4**: Polynomial and candidate feature matrix builder with combinatorial cross-terms.
-- [ ] **Phase 5**: Sequentially Thresholded Least Squares (STLSQ) optimizer with convergence criteria.
+- [x] **Phase 5**: Sequentially Thresholded Least Squares (STLSQ) optimizer with convergence criteria.
 - [ ] **Phase 6**: Core `SINDy` estimator implementing standard `.fit()`, `.predict()`, and `.score()`.
 - [ ] **Phase 7**: Lorenz-63 parameter recovery benchmark on clean trajectory data.
 - [ ] **Phase 8**: Noise sensitivity analysis and Pareto frontier threshold tuning ($\lambda \times \sigma$).
