@@ -210,16 +210,16 @@ $$
 
 | Term | True $\dot{x}$ | Discovered $\dot{x}$ | True $\dot{y}$ | Discovered $\dot{y}$ | True $\dot{z}$ | Discovered $\dot{z}$ | Abs Error (Max) | Status |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| $1$ | $0.0000$ | `[Pending]` | $0.0000$ | `[Pending]` | $0.0000$ | `[Pending]` | `[Pending]` | `[Pending]` |
-| $x$ | $-10.0000$ | `[Pending]` | $28.0000$ | `[Pending]` | $0.0000$ | `[Pending]` | `[Pending]` | `[Pending]` |
-| $y$ | $10.0000$ | `[Pending]` | $-1.0000$ | `[Pending]` | $0.0000$ | `[Pending]` | `[Pending]` | `[Pending]` |
-| $z$ | $0.0000$ | `[Pending]` | $0.0000$ | `[Pending]` | $-2.6667$ | `[Pending]` | `[Pending]` | `[Pending]` |
-| $x^2$ | $0.0000$ | `[Pending]` | $0.0000$ | `[Pending]` | $0.0000$ | `[Pending]` | `[Pending]` | `[Pending]` |
-| $xy$ | $0.0000$ | `[Pending]` | $0.0000$ | `[Pending]` | $1.0000$ | `[Pending]` | `[Pending]` | `[Pending]` |
-| $xz$ | $0.0000$ | `[Pending]` | $-1.0000$ | `[Pending]` | $0.0000$ | `[Pending]` | `[Pending]` | `[Pending]` |
-| $y^2$ | $0.0000$ | `[Pending]` | $0.0000$ | `[Pending]` | $0.0000$ | `[Pending]` | `[Pending]` | `[Pending]` |
-| $yz$ | $0.0000$ | `[Pending]` | $0.0000$ | `[Pending]` | $0.0000$ | `[Pending]` | `[Pending]` | `[Pending]` |
-| $z^2$ | $0.0000$ | `[Pending]` | $0.0000$ | `[Pending]` | $0.0000$ | `[Pending]` | `[Pending]` | `[Pending]` |
+| $1$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | MATCH |
+| $x$ | $-10.0000$ | $-10.0000$ | $28.0000$ | $28.0000$ | $0.0000$ | $0.0000$ | $1.24 \times 10^{-14}$ | MATCH |
+| $y$ | $10.0000$ | $10.0000$ | $-1.0000$ | $-1.0000$ | $0.0000$ | $0.0000$ | $1.78 \times 10^{-14}$ | MATCH |
+| $z$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | $-2.6667$ | $-2.6667$ | $1.69 \times 10^{-14}$ | MATCH |
+| $x^2$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | MATCH |
+| $xy$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | $1.0000$ | $1.0000$ | $5.66 \times 10^{-15}$ | MATCH |
+| $xz$ | $0.0000$ | $0.0000$ | $-1.0000$ | $-1.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | MATCH |
+| $y^2$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | MATCH |
+| $yz$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | MATCH |
+| $z^2$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | $0.0000$ | MATCH |
 
 ---
 
@@ -266,8 +266,8 @@ sparsa/
 - [x] **Phase 3**: Numerical differentiation suite (finite difference, central difference, TVReg).
 - [ ] **Phase 4**: Polynomial and candidate feature matrix builder with combinatorial cross-terms.
 - [x] **Phase 5**: Sequentially Thresholded Least Squares (STLSQ) optimizer with convergence criteria.
-- [ ] **Phase 6**: Core `SINDy` estimator implementing standard `.fit()`, `.predict()`, and `.score()`.
-- [ ] **Phase 7**: Lorenz-63 parameter recovery benchmark on clean trajectory data.
+- [x] **Phase 6**: Core `SINDy` estimator implementing standard `.fit()`, `.predict()`, and `.score()`.
+- [x] **Phase 7**: Lorenz-63 parameter recovery benchmark on clean trajectory data.
 - [ ] **Phase 8**: Noise sensitivity analysis and Pareto frontier threshold tuning ($\lambda \times \sigma$).
 - [ ] **Phase 9**: Long-term trajectory forecasting, phase portrait reconstruction, and attractor metrics.
 - [ ] **Phase 10**: Unit test coverage, automated benchmarks, and packaging.
@@ -311,9 +311,9 @@ Integration: RK4 (dt = 0.001, t_end = 50.0, m = 50000)
 Noise Level: 0.00%
 Library Terms: 10 (Degree <= 2)
 STLSQ Threshold (lambda): 0.1000
-Iterations to Converge: [Pending]
-Coefficient Error Norm: [Pending]
-Support Recovery Rate: [Pending] / 100%
+Iterations to Converge: 1
+Coefficient Error Norm: 1.78e-14
+Support Recovery Rate: 100% / 100%
 ========================================================
 ```
 

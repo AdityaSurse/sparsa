@@ -62,8 +62,7 @@ class STLSQ:
         Maximum number of threshold-and-refit iterations.
     normalize : bool, default=True
         Whether to normalize the columns of Theta internally to unit L2 norm during
-        optimization, and rescale the resulting coefficient matrix back to the original
-        physical units upon convergence.
+        least-squares solves to ensure numerical stability across mixed monomial scales.
 
     Attributes
     ----------
@@ -127,7 +126,7 @@ class STLSQ:
         if m != m_y:
             raise ValueError(f"Sample size mismatch: Theta has {m} rows, dXdt has {m_y}")
 
-        # 1. Internal column normalization of Theta
+        # 1. Internal column normalization of Theta for well-conditioned least-squares solves
         if self.normalize:
             col_norms = np.linalg.norm(theta_arr, axis=0)
             col_norms = np.where(col_norms == 0.0, 1.0, col_norms)
@@ -138,8 +137,10 @@ class STLSQ:
             Theta_work = theta_arr
             self.norms_ = col_norms
 
-        # 2. Initial unconstrained least-squares solve
-        Xi, _, _, _ = np.linalg.lstsq(Theta_work, dxdt_2d, rcond=None)
+        # 2. Initial unconstrained least-squares solve in normalized coordinates
+        Xi_work, _, _, _ = np.linalg.lstsq(Theta_work, dxdt_2d, rcond=None)
+        # Convert to physical coefficient units
+        Xi = Xi_work / col_norms[:, np.newaxis]
 
         # Initial active mask: all features initially active
         active_mask = np.ones((p, n), dtype=bool)
@@ -147,7 +148,7 @@ class STLSQ:
 
         # 3. Iterative threshold-and-refit loop
         for _ in range(self.max_iter):
-            # Identify small coefficients below threshold lambda
+            # Identify small coefficients below threshold lambda in physical units
             small = np.abs(Xi) < self.threshold
             new_active_mask = ~small
 
@@ -170,15 +171,14 @@ class STLSQ:
                     # Unconstrained refit on the active sub-dictionary
                     sub_theta = Theta_work[:, active_k]
                     sub_y = dxdt_2d[:, k]
-                    coef_k, _, _, _ = np.linalg.lstsq(sub_theta, sub_y, rcond=None)
-                    Xi[active_k, k] = coef_k
+                    coef_k_work, _, _, _ = np.linalg.lstsq(sub_theta, sub_y, rcond=None)
+                    Xi[active_k, k] = coef_k_work / col_norms[active_k]
                     Xi[~active_k, k] = 0.0
                 else:
                     # Handle edge case where entire column becomes inactive
                     Xi[:, k] = 0.0
 
-        # Rescale coefficients back to original physical coordinates
-        self.coef_ = Xi / col_norms[:, np.newaxis]
+        self.coef_ = np.copy(Xi)
         self.n_iter_ = len(self.active_history_) - 1
 
         if is_1d:
@@ -291,4 +291,3 @@ def pretty_print_equations(
         equations.append(eq)
 
     return equations
-

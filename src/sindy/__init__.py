@@ -31,6 +31,7 @@ from sindy.stlsq import (
     STLSQ,
     pretty_print_equations,
 )
+from sindy.pipeline import SINDy
 
 __all__ = [
     "DynamicalSystem",
@@ -54,5 +55,6 @@ __all__ = [
     "print_library",
     "STLSQ",
     "pretty_print_equations",
+    "SINDy",
 ]
 
