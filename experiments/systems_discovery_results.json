@@ -1,0 +1,68 @@
+[
+  {
+    "system": "Lotka-Volterra",
+    "library": "Polynomial (d=2)",
+    "true_equations": "du/dt = u - 0.1 u v ; dv/dt = -1.5 v + 0.075 u v",
+    "discovered_equations": "du/dt = 1.000 u - 0.100 u v ; dv/dt = -1.500 v + 0.075 u v",
+    "f1": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "coef_error": 2.477778336325581e-16,
+    "status": "EXACT"
+  },
+  {
+    "system": "Van der Pol (mu=2)",
+    "library": "Polynomial (d=3)",
+    "true_equations": "dx/dt = y ; dy/dt = -x + 2 y - 2 x^2 y",
+    "discovered_equations": "dx/dt = 1.000 y ; dy/dt = -1.000 x + 2.000 y - 2.000 x^2 y",
+    "f1": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "coef_error": 9.302052490790929e-16,
+    "status": "EXACT"
+  },
+  {
+    "system": "Damped Pendulum (Poly-only)",
+    "library": "Polynomial (d=3, trig=False)",
+    "true_equations": "dtheta/dt = omega ; domega/dt = -0.25 omega - 5 sin(theta)",
+    "discovered_equations": "dtheta/dt = 1.000 omega ; domega/dt = -4.865 theta - 0.250 omega + 0.649 theta^3",
+    "f1": 0.5,
+    "precision": 0.5,
+    "recall": 0.5,
+    "coef_error": 0.812,
+    "status": "TAYLOR APPROX"
+  },
+  {
+    "system": "Damped Pendulum (Trig)",
+    "library": "Trigonometric (d=1, trig=True)",
+    "true_equations": "dtheta/dt = omega ; domega/dt = -0.25 omega - 5 sin(theta)",
+    "discovered_equations": "dtheta/dt = 1.000 omega ; domega/dt = -0.250 omega - 5.000 sin(theta)",
+    "f1": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "coef_error": 7.841043619009572e-17,
+    "status": "EXACT"
+  },
+  {
+    "system": "Rossler Attractor",
+    "library": "Polynomial (d=2)",
+    "true_equations": "dx/dt = -y - z ; dy/dt = x + 0.2 y ; dz/dt = 0.2 - 5.7 z + x z",
+    "discovered_equations": "dx/dt = -1.000 y - 1.000 z ; dy/dt = 1.000 x + 0.200 y ; dz/dt = 0.200 - 5.700 z + 1.000 x z",
+    "f1": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "coef_error": 9.815814520841169e-16,
+    "status": "EXACT"
+  },
+  {
+    "system": "Rational Oscillator (Failure)",
+    "library": "Polynomial (d=3)",
+    "true_equations": "dx/dt = 2 x / (1 + x^2) - y ; dy/dt = x",
+    "discovered_equations": "dx/dt = 0.095 x - 0.987 y ; dy/dt = 1.000 x",
+    "f1": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "coef_error": 1.482,
+    "status": "BASIS DEFICIENT"
+  }
+]

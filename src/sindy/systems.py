@@ -37,6 +37,12 @@ DAMPED_PENDULUM_TRUE_COEFFICIENTS: Dict[str, Dict[str, float]] = {
     "omega": {"omega": -0.25, "sin(theta)": -5.0},
 }
 
+ROSSLER_TRUE_COEFFICIENTS: Dict[str, Dict[str, float]] = {
+    "x": {"y": -1.0, "z": -1.0},
+    "y": {"x": 1.0, "y": 0.2},
+    "z": {"1": 0.2, "z": -5.7, "x z": 1.0},
+}
+
 
 # ============================================================================
 # Vector Field Implementations
@@ -229,6 +235,54 @@ def damped_pendulum(
     return dxdt[0] if is_1d else dxdt
 
 
+def rossler(
+    x: np.ndarray,
+    params: Optional[Mapping[str, float]] = None,
+) -> np.ndarray:
+    """Compute the time derivative for the Rössler chaotic attractor.
+
+    Governing equations:
+        dx/dt = -y - z
+        dy/dt = x + a * y
+        dz/dt = b + z * (x - c) = b - c * z + x * z
+
+    Parameters
+    ----------
+    x : np.ndarray
+        State array of shape (3,) or (m, 3).
+    params : Optional[Mapping[str, float]], default=None
+        System parameters. Defaults to {'a': 0.2, 'b': 0.2, 'c': 5.7}.
+
+    Returns
+    -------
+    np.ndarray
+        Time derivative dx/dt of shape (3,) or (m, 3).
+    """
+    p = {"a": 0.2, "b": 0.2, "c": 5.7}
+    if params is not None:
+        p.update(params)
+
+    a, b, c = p["a"], p["b"], p["c"]
+
+    x_arr = np.asarray(x, dtype=np.float64)
+    is_1d = (x_arr.ndim == 1)
+    x_2d = np.atleast_2d(x_arr)
+
+    if x_2d.shape[1] != 3:
+        raise ValueError(f"Rössler system requires state dimension 3, got shape {x_arr.shape}")
+
+    x_val = x_2d[:, 0]
+    y_val = x_2d[:, 1]
+    z_val = x_2d[:, 2]
+
+    dxdt = np.empty_like(x_2d)
+    dxdt[:, 0] = -y_val - z_val
+    dxdt[:, 1] = x_val + a * y_val
+    dxdt[:, 2] = b + z_val * (x_val - c)
+
+    return dxdt[0] if is_1d else dxdt
+
+
 # ============================================================================
 # System Specification Dataclass & Registry
 # ============================================================================
@@ -290,6 +344,14 @@ SYSTEMS: Dict[str, DynamicalSystem] = {
         default_params={"b": 0.25, "c": 5.0},
         true_coefficients=DAMPED_PENDULUM_TRUE_COEFFICIENTS,
         default_ic_bounds=((-2.5, 2.5), (-2.0, 2.0)),
+    ),
+    "rossler": DynamicalSystem(
+        name="Rossler",
+        f=rossler,
+        state_names=["x", "y", "z"],
+        default_params={"a": 0.2, "b": 0.2, "c": 5.7},
+        true_coefficients=ROSSLER_TRUE_COEFFICIENTS,
+        default_ic_bounds=((-10.0, 10.0), (-10.0, 10.0), (0.0, 20.0)),
     ),
 }
 

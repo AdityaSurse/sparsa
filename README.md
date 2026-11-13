@@ -247,7 +247,13 @@ sparsa/
 │       ├── validation_coef_error.png
 │       ├── validation_attractor.png
 │       ├── noise_ablation_heatmaps.png
-│       └── noise_ablation_trajectories.png
+│       ├── noise_ablation_trajectories.png
+│       ├── system_lotka_volterra.png
+│       ├── system_van_der_pol.png
+│       ├── system_damped_pendulum.png
+│       ├── system_rossler.png
+│       ├── system_rational_failure.png
+│       └── systems_discovery_summary.png
 ├── src/
 │   └── sindy/ (aliased as sparsa/)
 │       ├── __init__.py
@@ -263,7 +269,8 @@ sparsa/
 │   ├── exp_derivatives.py
 │   ├── exp_lorenz_discovery.py
 │   ├── exp_validation.py
-│   └── exp_noise.py
+│   ├── exp_noise.py
+│   └── exp_systems.py
 └── tests/
     ├── test_simulation.py
     ├── test_differentiation.py
@@ -387,6 +394,26 @@ $\sigma \in [0, 0.001, 0.005, 0.01, 0.05]$, $\Delta t \in [0.001, 0.005, 0.01, 0
 
 ![Noise Ablation Trajectory Scaling](docs/figures/noise_ablation_trajectories.png)
 *Figure 5: Support F1 scaling with trajectory count ($n_{\text{traj}} \in \{1, 5, 20\}$) across noise levels and comparative method robustness at severe noise ($\sigma=0.05$).*
+
+### E. Multi-System Discovery Benchmark
+
+Evaluated across continuous nonlinear dynamical architectures, ranging from ecological limit cycles to chaotic attractors and basis-deficient systems:
+
+| System Name | Candidate Library | Discovered Governing ODEs | Support F1 | Rel. Coef Error | Status |
+| :--- | :--- | :--- | :---: | :---: | :---: |
+| **Lotka-Volterra** | Polynomial ($d=2$) | $\dot{u} = 1.000 u - 0.100 u v$ <br/> $\dot{v} = -1.500 v + 0.075 u v$ | `1.000` | `2.48e-16` | EXACT |
+| **Van der Pol ($\mu=2$)** | Polynomial ($d=3$) | $\dot{x} = 1.000 y$ <br/> $\dot{y} = -1.000 x + 2.000 y - 2.000 x^2 y$ | `1.000` | `9.30e-16` | EXACT |
+| **Damped Pendulum (Poly-only)** | Polynomial ($d=3$, trig=False) | $\dot{\theta} = 1.000 \omega$ <br/> $\dot{\omega} = -4.865 \theta - 0.250 \omega + 0.649 \theta^3$ | `0.500` | `8.12e-01` | TAYLOR APPROX |
+| **Damped Pendulum (Trig)** | Trigonometric ($d=1$, trig=True) | $\dot{\theta} = 1.000 \omega$ <br/> $\dot{\omega} = -0.250 \omega - 5.000 \sin(\theta)$ | `1.000` | `7.84e-17` | EXACT |
+| **Rössler Attractor** | Polynomial ($d=2$) | $\dot{x} = -1.000 y - 1.000 z$ <br/> $\dot{y} = 1.000 x + 0.200 y$ <br/> $\dot{z} = 0.200 - 5.700 z + 1.000 x z$ | `1.000` | `9.82e-16` | EXACT |
+| **Rational Oscillator (Failure)** | Polynomial ($d=3$) | $\dot{x} = 0.095 x - 0.987 y$ <br/> $\dot{y} = 1.000 x$ | `0.000` | `1.48e+00` | BASIS DEFICIENT |
+
+![Multi-System Discovery Summary](docs/figures/systems_discovery_summary.png)
+*Figure 6: Phase portrait reconstructions and vector field error comparisons across Lotka-Volterra, Van der Pol, Damped Pendulum, Rössler Attractor, and Rational Oscillator.*
+
+#### Basis Deficiency and Structural Failure Modes
+1. **Damped Pendulum Basis Mismatch**: In a polynomial-only library, SINDy recovers the Taylor series truncation $-5 \sin(\theta) \approx -5 (\theta - \theta^3/6) = -5 \theta + 0.833 \theta^3$, discovering $-4.865 \theta + 0.649 \theta^3$. Supplying `trig=True` enables discovery of the exact non-polynomial functional form $-5.000 \sin(\theta)$ with machine precision ($7.84 \times 10^{-17}$ error).
+2. **Rational Saturation Failure Case**: For $\dot{x} = \frac{2x}{1+x^2} - y$, the true saturating term possesses complex poles at $x = \pm i$ with convergence radius $R=1$. For $|x| > 1$, polynomials grow unbounded ($\sim x^3 \to \infty$) whereas true physics decays ($O(1/x) \to 0$), causing the polynomial surrogate to invert flow directions and diverge out of distribution. This illustrates the fundamental requirement for candidate library completeness in equation discovery.
 
 ---
 
