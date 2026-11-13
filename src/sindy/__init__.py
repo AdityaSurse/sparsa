@@ -32,6 +32,14 @@ from sindy.stlsq import (
     pretty_print_equations,
 )
 from sindy.pipeline import SINDy
+from sindy.metrics import (
+    support_metrics,
+    coef_error,
+    derivative_r2,
+    rollout_error,
+    lyapunov_time_ratio,
+    attractor_similarity,
+)
 
 __all__ = [
     "DynamicalSystem",
@@ -56,5 +64,11 @@ __all__ = [
     "STLSQ",
     "pretty_print_equations",
     "SINDy",
+    "support_metrics",
+    "coef_error",
+    "derivative_r2",
+    "rollout_error",
+    "lyapunov_time_ratio",
+    "attractor_similarity",
 ]
 

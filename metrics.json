@@ -1,0 +1,41 @@
+{
+  "dataset": {
+    "system": "Lorenz-63",
+    "n_train_trajectories": 5,
+    "n_test_trajectories": 20,
+    "dt": 0.002,
+    "t_end": 20.0,
+    "train_seed": 42,
+    "test_seed": 999
+  },
+  "support_metrics": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "tp": 7.0,
+    "fp": 0.0,
+    "fn": 0.0,
+    "tn": 53.0
+  },
+  "parameter_metrics": {
+    "relative_frobenius_error": 9.16795302868396e-16,
+    "derivative_r2": 1.0,
+    "active_terms_count": 7,
+    "true_terms_count": 7
+  },
+  "rollout_divergence": {
+    "divergence_threshold": 0.1,
+    "lambda_max": 0.906,
+    "mean_divergence_time_sec": 20.0,
+    "median_divergence_time_sec": 20.0,
+    "min_divergence_time_sec": 20.0,
+    "max_divergence_time_sec": 20.0,
+    "mean_lyapunov_times": 18.12,
+    "median_lyapunov_times": 18.12
+  },
+  "attractor_similarity": {
+    "wasserstein_distance_z": 3.1192994781405047e-07,
+    "total_variation_density_xz": 0.0,
+    "jensen_shannon_divergence_xz": 0.0
+  }
+}
