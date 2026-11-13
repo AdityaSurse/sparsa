@@ -23,6 +23,10 @@ from sindy.derivatives import (
     savgol_diff,
     tv_diff,
 )
+from sindy.weak_form import (
+    weak_test_function_kernels,
+    weak_form_projection,
+)
 from sindy.library import (
     FeatureLibrary,
     print_library,
@@ -59,6 +63,8 @@ __all__ = [
     "central_diff",
     "savgol_diff",
     "tv_diff",
+    "weak_test_function_kernels",
+    "weak_form_projection",
     "FeatureLibrary",
     "print_library",
     "STLSQ",

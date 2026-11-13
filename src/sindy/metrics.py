@@ -184,8 +184,9 @@ def rollout_error(
     norm_true_safe = np.where(norm_true == 0.0, 1e-12, norm_true)
     rel_error = norm_diff / norm_true_safe
 
-    # Identify first instant exceeding divergence threshold
-    exceed_indices = np.where(rel_error >= divergence_threshold)[0]
+    # Identify first instant exceeding divergence threshold or encountering numerical instability
+    diverged = (rel_error >= divergence_threshold) | np.isnan(rel_error) | np.isinf(rel_error)
+    exceed_indices = np.where(diverged)[0]
     if len(exceed_indices) > 0:
         divergence_time = float(t[exceed_indices[0]])
     else:

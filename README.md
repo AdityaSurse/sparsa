@@ -245,13 +245,16 @@ sparsa/
 │       ├── lorenz_timeseries_overlay.png
 │       ├── validation_rollout_error.png
 │       ├── validation_coef_error.png
-│       └── validation_attractor.png
+│       ├── validation_attractor.png
+│       ├── noise_ablation_heatmaps.png
+│       └── noise_ablation_trajectories.png
 ├── src/
 │   └── sindy/ (aliased as sparsa/)
 │       ├── __init__.py
 │       ├── systems.py
 │       ├── simulate.py
 │       ├── derivatives.py
+│       ├── weak_form.py
 │       ├── library.py
 │       ├── stlsq.py
 │       ├── pipeline.py
@@ -259,13 +262,15 @@ sparsa/
 ├── experiments/
 │   ├── exp_derivatives.py
 │   ├── exp_lorenz_discovery.py
-│   └── exp_validation.py
+│   ├── exp_validation.py
+│   └── exp_noise.py
 └── tests/
     ├── test_simulation.py
     ├── test_differentiation.py
     ├── test_library.py
     ├── test_stlsq.py
-    └── test_metrics.py
+    ├── test_metrics.py
+    └── test_weak_form.py
 ```
 
 ---
@@ -363,6 +368,25 @@ Evaluated across 20 unseen initial conditions ($t_{\text{end}} = 20.0$, $dt = 0.
 
 ![Validation Coefficient Error](docs/figures/validation_coef_error.png)
 *Figure 3: Absolute error distribution across all candidate library terms $\mathbf{\Theta}$, demonstrating machine-precision coefficient recovery.*
+
+### D. Systematic Noise and Numerical Differentiation Ablation Study
+
+Evaluated over $1,800$ benchmark runs across a full factorial grid:
+$\sigma \in [0, 0.001, 0.005, 0.01, 0.05]$, $\Delta t \in [0.001, 0.005, 0.01, 0.02]$, methods $\in \{\text{Central Diff}, \text{Savitzky-Golay}, \text{Weak-Form SINDy}\}$, and trajectories $\in \{1, 5, 20\}$ (10 randomized seeds per cell):
+
+| Noise Level ($\sigma$) | Optimal Threshold ($\lambda^*$) | Mean Support F1 | Precision | Recall | Rel. Coef Error | Horizon ($\tau_L$) | Primary Failure Mode |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| `0.000` | `0.40` | `0.991` | `0.991` | `0.993` | `2.83e-01` | `3.66` | False Positives (Extra Terms) |
+| `0.001` | `0.40` | `0.984` | `0.982` | `0.991` | `3.66e+00` | `3.52` | False Positives (Extra Terms) |
+| `0.005` | `0.40` | `0.981` | `0.981` | `0.988` | `6.70e+00` | `3.03` | False Positives (Extra Terms) |
+| `0.010` | `0.40` | `0.966` | `0.968` | `0.976` | `1.11e+01` | `2.62` | False Positives (Extra Terms) |
+| `0.050` | `0.40` | `0.907` | `0.887` | `0.954` | `8.06e+00` | `1.47` | False Positives (Extra Terms) |
+
+![Noise Ablation Heatmaps](docs/figures/noise_ablation_heatmaps.png)
+*Figure 4: Support recovery F1 heatmaps across noise $\sigma$ and sampling interval $\Delta t$ comparing Central Differences, Savitzky-Golay, and Weak-Form SINDy ($n_{\text{traj}}=5$).*
+
+![Noise Ablation Trajectory Scaling](docs/figures/noise_ablation_trajectories.png)
+*Figure 5: Support F1 scaling with trajectory count ($n_{\text{traj}} \in \{1, 5, 20\}$) across noise levels and comparative method robustness at severe noise ($\sigma=0.05$).*
 
 ---
 

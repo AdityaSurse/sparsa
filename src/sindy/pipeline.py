@@ -10,6 +10,7 @@ from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
 import numpy as np
 
 from sindy.derivatives import central_diff, savgol_diff, tv_diff
+from sindy.weak_form import weak_form_projection
 from sindy.library import FeatureLibrary
 from sindy.simulate import simulate
 from sindy.stlsq import STLSQ, pretty_print_equations
@@ -123,7 +124,40 @@ class SINDy:
         else:
             trajectories = list(X_list)
 
-        # Compute or collect derivatives
+        # 1. Handle weak-form variational projection bypassing pointwise derivatives
+        if self.diff_method in ("weak", "weak_form"):
+            self.library_ = FeatureLibrary(
+                poly_degree=self.poly_degree,
+                include_bias=self.include_bias,
+                trig=self.trig,
+                var_names=self.var_names,
+                normalize=False,
+            )
+            self.library_.fit(trajectories[0])
+            self.feature_names_ = self.library_.get_feature_names()
+            self.var_names_ = self.library_.resolved_var_names_
+
+            theta_weak_list = []
+            g_weak_list = []
+            for traj in trajectories:
+                theta_traj = self.library_.transform(traj)
+                th_w, g_w = weak_form_projection(traj, theta_traj, dt, **self.diff_kwargs)
+                theta_weak_list.append(th_w)
+                g_weak_list.append(g_w)
+
+            Theta = np.vstack(theta_weak_list)
+            target = np.vstack(g_weak_list)
+
+            self.optimizer_ = STLSQ(
+                threshold=self.threshold,
+                max_iter=self.max_iter,
+                normalize=self.normalize,
+            )
+            self.optimizer_.fit(Theta, target)
+            self.coef_ = self.optimizer_.coef_
+            return self
+
+        # Compute or collect derivatives for standard differential SINDy
         if dXdt_list is not None:
             if isinstance(dXdt_list, np.ndarray):
                 derivatives = [dXdt_list]
